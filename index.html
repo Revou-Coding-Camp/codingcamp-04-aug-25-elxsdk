@@ -4,37 +4,58 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo List</title>
+    <title>To-Do List App</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
-<body>
-    <div class="container">
-        <h1>Todo List</h1>
-        <div class="form-group">
-            <input type="text" id="todo-input" placeholder="Add a todo . . ." />
-            <input type="date" id="date-input" />
-            <button id="add-btn">+</button>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-center">📝 To-Do List</h1>
+
+        <!-- Form To-Do -->
+        <form id="todoForm" class="flex flex-col gap-4 mb-6">
+            <input type="text" id="taskInput" placeholder="Enter a task"
+                class="px-4 py-2 rounded bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required />
+            <input type="date" id="dateInput"
+                class="px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required />
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">
+                Add Task
+            </button>
+        </form>
+
+        <!-- Filter and Delete -->
+        <div class="flex justify-between items-center mb-4">
+            <select id="filterStatus" class="px-3 py-2 rounded bg-gray-800 text-white border border-gray-600">
+                <option value="all">All</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+            </select>
+            <button id="deleteAllBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold">
+                Delete All
+            </button>
         </div>
-        <div class="buttons">
-            <button id="filter-btn">Filter</button>
-            <button id="delete-all-btn">DELETE ALL</button>
+
+        <!-- To-Do Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto text-left border border-gray-700">
+                <thead>
+                    <tr class="bg-gray-700">
+                        <th class="px-4 py-2">Task</th>
+                        <th class="px-4 py-2">Due Date</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="todoList" class="bg-gray-800 divide-y divide-gray-700">
+                    <!-- Task rows will be inserted here dynamically -->
+                </tbody>
+            </table>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Task</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="todo-list">
-                <tr>
-                    <td colspan="4" class="no-task">No task found</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
     <script src="js/script.js"></script>

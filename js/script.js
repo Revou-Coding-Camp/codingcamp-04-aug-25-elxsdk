@@ -1,70 +1,89 @@
-const addBtn = document.getElementById("add-btn");
-const todoInput = document.getElementById("todo-input");
-const dateInput = document.getElementById("date-input");
-const todoList = document.getElementById("todo-list");
-const deleteAllBtn = document.getElementById("delete-all-btn");
+const todoForm = document.getElementById("todoForm");
+const taskInput = document.getElementById("taskInput");
+const dateInput = document.getElementById("dateInput");
+const todoList = document.getElementById("todoList");
+const filterStatus = document.getElementById("filterStatus");
+const deleteAllBtn = document.getElementById("deleteAllBtn");
 
-let todos = [];
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-function renderTodos() {
+function saveToLocalStorage() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function renderTodos(filter = "all") {
   todoList.innerHTML = "";
 
-  if (todos.length === 0) {
-    const row = document.createElement("tr");
-    row.innerHTML = `<td colspan="4" class="no-task">No task found</td>`;
-    todoList.appendChild(row);
-    return;
-  }
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "all") return true;
+    return filter === "completed" ? todo.completed : !todo.completed;
+  });
 
-  todos.forEach((todo, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${todo.task}</td>
-      <td>${todo.date}</td>
-      <td>${todo.done ? "Done" : "Pending"}</td>
-      <td>
-        <button onclick="toggleStatus(${index})">✓</button>
-        <button onclick="deleteTodo(${index})">🗑</button>
+  filteredTodos.forEach((todo, index) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td class="px-4 py-2">${todo.task}</td>
+      <td class="px-4 py-2">${todo.date}</td>
+      <td class="px-4 py-2">
+        <span class="${todo.completed ? "text-green-400" : "text-yellow-400"}">
+          ${todo.completed ? "Completed" : "Pending"}
+        </span>
       </td>
+      <td class="px-4 py-2">
+  <div class="flex gap-2 justify-center">
+    <button onclick="toggleStatus(${index})" class="text-sm bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-white">
+      Toggle
+    </button>
+    <button onclick="deleteTodo(${index})" class="text-sm bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-white">
+      Delete
+    </button>
+  </div>
+</td>
+
     `;
-    todoList.appendChild(row);
+
+    todoList.appendChild(tr);
   });
 }
 
-function addTodo() {
-  const task = todoInput.value.trim();
-  const date = dateInput.value;
-
-  if (task === "" || date === "") {
-    alert("Please enter both task and date.");
-    return;
-  }
-
-  todos.push({ task, date, done: false });
-  todoInput.value = "";
-  dateInput.value = "";
-  renderTodos();
+function toggleStatus(index) {
+  todos[index].completed = !todos[index].completed;
+  saveToLocalStorage();
+  renderTodos(filterStatus.value);
 }
 
 function deleteTodo(index) {
   todos.splice(index, 1);
-  renderTodos();
+  saveToLocalStorage();
+  renderTodos(filterStatus.value);
 }
 
-function toggleStatus(index) {
-  todos[index].done = !todos[index].done;
-  renderTodos();
-}
+todoForm.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-function deleteAll() {
+  const task = taskInput.value.trim();
+  const date = dateInput.value;
+
+  if (!task || !date) return;
+
+  todos.push({ task, date, completed: false });
+  taskInput.value = "";
+  dateInput.value = "";
+
+  saveToLocalStorage();
+  renderTodos(filterStatus.value);
+});
+
+filterStatus.addEventListener("change", () => renderTodos(filterStatus.value));
+
+deleteAllBtn.addEventListener("click", () => {
   if (confirm("Are you sure you want to delete all tasks?")) {
     todos = [];
+    saveToLocalStorage();
     renderTodos();
   }
-}
-
-addBtn.addEventListener("click", addTodo);
-deleteAllBtn.addEventListener("click", deleteAll);
+});
 
 // Initial render
-renderTodos();
+renderTodos(filterStatus.value);
