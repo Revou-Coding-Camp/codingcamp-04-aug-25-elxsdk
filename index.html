@@ -11,50 +11,75 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
-<body class="bg-gray-900 text-white min-h-screen p-6">
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6 text-center">📝 To-Do List</h1>
+<body class="bg-blue-50 text-gray-900 min-h-screen p-4 sm:p-6 flex flex-col items-center relative">
+    <button id="darkModeToggle">
+        <span id="darkModeIcon">☀️</span>
+        <span id="darkModeText">Light Mode</span>
+    </button>
 
-        <!-- Form To-Do -->
-        <form id="todoForm" class="flex flex-col gap-4 mb-6">
-            <input type="text" id="taskInput" placeholder="Enter a task"
-                class="px-4 py-2 rounded bg-gray-800 text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div
+        class="max-w-2xl mx-auto w-full bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-200 main-container">
+        <h1 class="text-3xl sm:text-4xl font-extrabold mb-6 sm:mb-8 text-center text-blue-600">📝 To-Do List</h1>
+
+        <form id="todoForm" class="flex flex-col gap-4 sm:gap-5 mb-6 sm:mb-8">
+            <input type="text" id="taskInput" placeholder="Enter a new task..."
+                class="px-4 py-2 sm:px-5 sm:py-3 rounded-lg bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base sm:text-lg form-input"
                 required />
             <input type="date" id="dateInput"
-                class="px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-4 py-2 sm:px-5 sm:py-3 rounded-lg bg-gray-100 text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base sm:text-lg form-input"
                 required />
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-3 rounded-lg font-bold text-base sm:text-lg transition duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg">
                 Add Task
             </button>
         </form>
 
-        <!-- Filter and Delete -->
-        <div class="flex justify-between items-center mb-4">
-            <select id="filterStatus" class="px-3 py-2 rounded bg-gray-800 text-white border border-gray-600">
-                <option value="all">All</option>
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <select id="filterStatus"
+                class="px-3 py-2 rounded-lg bg-gray-100 text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base w-full sm:w-auto filter-select">
+                <option value="all">All Tasks</option>
                 <option value="completed">Completed</option>
                 <option value="pending">Pending</option>
             </select>
-            <button id="deleteAllBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold">
+            <button id="deleteAllBtn"
+                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-lg font-semibold text-sm sm:text-base transition duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg w-full sm:w-auto">
                 Delete All
             </button>
         </div>
 
-        <!-- To-Do Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full table-auto text-left border border-gray-700">
+        <div class="overflow-x-auto rounded-xl border border-gray-300 shadow-inner">
+            <table class="w-full table-auto text-left">
                 <thead>
-                    <tr class="bg-gray-700">
-                        <th class="px-4 py-2">Task</th>
-                        <th class="px-4 py-2">Due Date</th>
-                        <th class="px-4 py-2">Status</th>
-                        <th class="px-4 py-2">Actions</th>
+                    <tr class="bg-gray-200 border-b border-gray-300 table-header">
+                        <th
+                            class="px-4 py-2 sm:px-5 sm:py-3 text-gray-700 text-xs sm:text-sm font-medium uppercase tracking-wider rounded-tl-xl">
+                            Task</th>
+                        <th
+                            class="px-4 py-2 sm:px-5 sm:py-3 text-gray-700 text-xs sm:text-sm font-medium uppercase tracking-wider">
+                            Due Date</th>
+                        <th
+                            class="px-4 py-2 sm:px-5 sm:py-3 text-gray-700 text-xs sm:text-sm font-medium uppercase tracking-wider">
+                            Status</th>
+                        <th
+                            class="px-4 py-2 sm:px-5 sm:py-3 text-gray-700 text-xs sm:text-sm font-medium uppercase tracking-wider rounded-tr-xl">
+                            Actions</th>
                     </tr>
                 </thead>
-                <tbody id="todoList" class="bg-gray-800 divide-y divide-gray-700">
-                    <!-- Task rows will be inserted here dynamically -->
+                <tbody id="todoList" class="bg-white divide-y divide-gray-200 table-body">
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div id="confirmationModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Are you sure you want to delete all tasks?</h3>
+            <div class="modal-actions">
+                <button id="confirmYesBtn"
+                    class="bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg">Yes</button>
+                <button id="confirmNoBtn"
+                    class="bg-gray-600 hover:bg-gray-700 text-white shadow-md hover:shadow-lg">No</button>
+            </div>
         </div>
     </div>
 
