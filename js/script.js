@@ -1,4 +1,3 @@
-// JavaScript for the To-Do List App
 const todoForm = document.getElementById("todoForm");
 const taskInput = document.getElementById("taskInput");
 const dateInput = document.getElementById("dateInput");
@@ -8,17 +7,14 @@ const deleteAllBtn = document.getElementById("deleteAllBtn");
 const darkModeToggle = document.getElementById("darkModeToggle");
 const darkModeIcon = document.getElementById("darkModeIcon");
 const darkModeText = document.getElementById("darkModeText");
+const taskCounter = document.getElementById("taskCounter");
 
-// Modal elements
 const confirmationModal = document.getElementById("confirmationModal");
 const confirmYesBtn = document.getElementById("confirmYesBtn");
 const confirmNoBtn = document.getElementById("confirmNoBtn");
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-/**
- * Saves the current todos array to localStorage.
- */
 function saveToLocalStorage() {
   localStorage.setItem("todos", JSON.stringify(todos));
 }
@@ -41,15 +37,23 @@ function applyTheme(theme) {
   }
 }
 
-/**
- * Toggles the theme between dark and light.
- */
 function toggleTheme() {
   if (document.body.classList.contains("dark")) {
     applyTheme("light");
   } else {
     applyTheme("dark");
   }
+}
+
+/**
+ * Update the task counter display based on current filter.
+ * @param {string} filter - The current filter ('all', 'completed', 'pending').
+ */
+function updateTaskCounter(filter = "all") {
+  const total = todos.length;
+  const completed = todos.filter((todo) => todo.completed).length;
+  const pending = total - completed;
+  taskCounter.textContent = `Total: ${total} | Completed: ${completed} | Pending: ${pending}`;
 }
 
 /**
@@ -66,7 +70,6 @@ function renderTodos(filter = "all") {
 
   filteredTodos.forEach((todo, index) => {
     const tr = document.createElement("tr");
-    // Apply different hover colors based on theme
     tr.classList.add("task-item");
     if (document.body.classList.contains("dark")) {
       tr.classList.add("hover:bg-gray-700");
@@ -102,6 +105,8 @@ function renderTodos(filter = "all") {
 
     todoList.appendChild(tr);
   });
+
+  updateTaskCounter(filter);
 }
 
 /**
@@ -124,7 +129,6 @@ function deleteTodo(index) {
   renderTodos(filterStatus.value);
 }
 
-// Event listener for adding a new task
 todoForm.addEventListener("submit", (e) => {
   e.preventDefault(); // Prevent default form submission
 
@@ -141,16 +145,12 @@ todoForm.addEventListener("submit", (e) => {
   renderTodos(filterStatus.value);
 });
 
-// Event listener for changing the filter status
 filterStatus.addEventListener("change", () => renderTodos(filterStatus.value));
 
-// Event listener for the "Delete All" button
 deleteAllBtn.addEventListener("click", () => {
-  // Show the custom confirmation modal instead of confirm()
   confirmationModal.classList.add("show");
 });
 
-// Event listener for "Yes" button in the confirmation modal
 confirmYesBtn.addEventListener("click", () => {
   todos = []; // Clear all tasks
   saveToLocalStorage();
@@ -158,15 +158,12 @@ confirmYesBtn.addEventListener("click", () => {
   confirmationModal.classList.remove("show"); // Hide modal after action
 });
 
-// Event listener for "No" button in the confirmation modal
 confirmNoBtn.addEventListener("click", () => {
   confirmationModal.classList.remove("show"); // Just hide modal
 });
 
-// Event listener for dark mode toggle button
 darkModeToggle.addEventListener("click", toggleTheme);
 
-// Initial theme application based on localStorage or system preference
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme) {
   applyTheme(savedTheme);
@@ -174,13 +171,11 @@ if (savedTheme) {
   window.matchMedia &&
   window.matchMedia("(prefers-color-scheme: dark)").matches
 ) {
-  // Check system preference if no theme is saved
   applyTheme("dark");
 } else {
-  applyTheme("light"); // Default to light mode
+  applyTheme("light");
 }
 
-// Re-render todos whenever the theme changes to apply correct hover styles
 const observer = new MutationObserver(() => {
   renderTodos(filterStatus.value);
 });
@@ -189,5 +184,4 @@ observer.observe(document.body, {
   attributeFilter: ["class"],
 });
 
-// Initial render of todos when the page loads
 renderTodos(filterStatus.value);
